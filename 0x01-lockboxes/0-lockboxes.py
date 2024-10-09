@@ -13,28 +13,21 @@ def canUnlockAll(boxes):
         bool: True if all boxes can be opened, otherwise False.
 
     Description:
-        - You are given n boxes numbered from 0 to n-1.
+        - You are given a number of boxes
         - Each box can contain keys to other boxes.
-        - The first box (boxes[0]) is always unlocked.
+        - The first box is always unlocked.
         - A key with the same number as a box opens that box.
         - The goal is to determine if all boxes can be unlocked
         using the keys inside.
     """
-    n = len(boxes)
+    open = set([0])
+    closed = set(boxes[0]).difference(open)
 
-    unlocked = [False] * n
-    unlocked[0] = True
+    while len(closed) > 0:
+        key = closed.pop()
 
-    keys = boxes[0]
+    if key not in open:
+        open.add(key)
+        closed = closed.union(boxes[key]).difference(open)
 
-    stack = keys[:]
-
-    while stack:
-        current_key = stack.pop()
-
-        if current_key < n and not unlocked[current_key]:
-            unlocked[current_key] = True
-            stack.extend(boxes[current_key])
-
-    return all(unlocked)
-
+    return len(open) == len(boxes)
