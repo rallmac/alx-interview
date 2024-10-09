@@ -37,3 +37,4 @@ def canUnlockAll(boxes):
             stack.extend(boxes[current_key])
 
     return all(unlocked)
+
