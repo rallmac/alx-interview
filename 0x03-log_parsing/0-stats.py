@@ -4,7 +4,6 @@
 """
 import sys
 
-total_size = 0
 status_codes_count = {
     200: 0,
     301: 0,
@@ -15,7 +14,6 @@ status_codes_count = {
     405: 0,
     500: 0
 }
-line_count = 0
 
 
 def print_stats():
@@ -25,6 +23,9 @@ def print_stats():
         if status_codes_count[code] > 0:
             print(f"{code}: {status_codes_count[code]}")
 
+
+line_count = 0
+total_file_size = 0
 
 try:
     for line in sys.stdin:
