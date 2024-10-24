@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""This script reads stdin line by line and
-   computes metrics
-"""
+"""This script reads stdin line by line and computes metrics."""
 import sys
 import re
 
@@ -60,4 +58,9 @@ try:
 except KeyboardInterrupt:
     # Print the final stats on keyboard interrupt (CTRL + C)
     print_stats()
+    sys.exit()
+
+except BrokenPipeError:
+    # Handle broken pipe errors when the output stream is closed
+    sys.stdout.close()
     sys.exit()
