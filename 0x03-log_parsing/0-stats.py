@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""This script reads stdin line by line and
+   computes matrics
+"""
 import sys
 
 total_size = 0
@@ -44,6 +47,6 @@ try:
         except (ValueError, IndexError):
             continue
 
-except Exception:
+except KeyboardInterrupt:
     print_stats()
     raise
