@@ -28,7 +28,7 @@ total_file_size = 0
 
 try:
     for line in sys.stdin:
-        line_count += 1
+        line_count = line_count + 1
 
         # Use regular expression to match the input format
         match = re.match(
@@ -58,9 +58,3 @@ try:
 except Exception:
     # Print the final stats on keyboard interrupt (CTRL + C)
     print_stats()
-    sys.exit()
-
-except BrokenPipeError:
-    # Handle broken pipe errors when the output stream is closed
-    sys.stdout.close()
-    sys.exit()
