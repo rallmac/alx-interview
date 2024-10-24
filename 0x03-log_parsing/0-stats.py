@@ -52,9 +52,6 @@ try:
         if line_count % 10 == 0:
             print_stats()
 
-    # Print the final stats when input ends
-    print_stats()
-
 except Exception:
     # Print the final stats on keyboard interrupt (CTRL + C)
     print_stats()
