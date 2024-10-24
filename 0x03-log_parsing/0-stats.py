@@ -55,7 +55,7 @@ try:
     # Print the final stats when input ends
     print_stats()
 
-except KeyboardInterrupt:
+except Exception:
     # Print the final stats on keyboard interrupt (CTRL + C)
     print_stats()
     sys.exit()
