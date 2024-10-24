@@ -17,12 +17,14 @@ status_codes_count = {
 }
 line_count = 0
 
+
 def print_stats():
     """Prints the accumulated metrics"""
     print(f"File size: {total_size}")
     for code in sorted(status_codes_count.keys()):
         if status_codes_count[code] > 0:
             print(f"{code}: {status_codes_count[code]}")
+
 
 try:
     for line in sys.stdin:
