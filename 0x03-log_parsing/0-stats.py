@@ -51,6 +51,7 @@ try:
         # Print stats every 10 lines
         if line_count % 10 == 0:
             print_stats()
+    print_stats()
 
 except Exception:
     # Print the final stats on keyboard interrupt (CTRL + C)
