@@ -49,6 +49,6 @@ try:
         except (ValueError, IndexError):
             continue
 
-except KeyboardInterrupt:
+except Exception:
     print_stats()
     raise
