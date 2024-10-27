@@ -1,58 +1,62 @@
 #!/usr/bin/python3
-"""This script reads stdin line by line and computes metrics."""
 import sys
-import re
+import signal
 
-status_codes_count = {
-    200: 0,
-    301: 0,
-    400: 0,
-    401: 0,
-    403: 0,
-    404: 0,
-    405: 0,
-    500: 0
-}
+# Initialize counters
+total_file_size = 0
+status_counts = {code: 0 for code in (200, 301, 400, 401, 403, 404, 405, 500)}
+line_count = 0
 
 
 def print_stats():
-    """Prints the accumulated metrics"""
+    """Prints the current statistics (file size and status counts)."""
     print(f"File size: {total_file_size}")
-    for code in sorted(status_codes_count.keys()):
-        if status_codes_count[code] > 0:
-            print(f"{code}: {status_codes_count[code]}")
+    for code in sorted(status_counts):
+        if status_counts[code] > 0:
+            print(f"{code}: {status_counts[code]}")
 
 
-line_count = 0
-total_file_size = 0
+def process_line(line):
+    """Processes a single line of input."""
+    global total_file_size
+    try:
+        # Split line to extract IP, date, request, status code, and file size
+        parts = line.split()
+        if len(parts) < 7:
+            return
 
-try:
-    for line in sys.stdin:
-        line_count = line_count + 1
+        # Parse file size and status code
+        file_size = int(parts[-1])
+        status_code = int(parts[-2])
 
-        # Use regular expression to match the input format
-        match = re.match(
-            r'(\S+) - \[(.*?)\] '  # IP address and date
-            r'"GET /projects/260 HTTP/1.1" '  # Request line
-            r'(\d{3}) '  # Status code
-            r'(\d+)',  # File size
-            line
-        )
+        # Accumulate file size
+        total_file_size += file_size
 
-        if match:
-            status_code = int(match.group(3))
-            file_size = int(match.group(4))
+        # Count the status code if it's in our list
+        if status_code in status_counts:
+            status_counts[status_code] += 1
+    except (ValueError, IndexError):
+        # Ignore lines with incorrect format
+        pass
 
-            total_file_size += file_size
 
-            if status_code in status_codes_count:
-                status_codes_count[status_code] += 1
-
-        # Print stats every 10 lines
-        if line_count % 10 == 0:
-            print_stats()
+def handle_interrupt(signal, frame):
+    """Handles keyboard interruption (CTRL + C) by printing statistics."""
     print_stats()
+    sys.exit(0)
 
-except Exception:
-    # Print the final stats on keyboard interrupt (CTRL + C)
-    print_stats()
+
+# Attach the interrupt handler for CTRL + C
+signal.signal(signal.SIGINT, handle_interrupt)
+
+# Main loop to read stdin line by line
+for line in sys.stdin:
+    process_line(line)
+    line_count += 1
+
+    # Print stats every 10 lines
+    if line_count % 10 == 0:
+        print_stats()
+
+# Final stats print at end of input
+print_stats()
