@@ -1,25 +1,31 @@
 #!/usr/bin/node
 
-const axios = require('axios');
+const request = require('request');
 const movieId = process.argv[2];
 
-// Construct the correct URL for the specific movie
 const apiUrl = `https://swapi-api.alx-tools.com/api/films/${movieId}/`;
 
-async function fetchCharacterNames () {
-  try {
-    // Fetch movie details with character URLs
-    const response = await axios.get(apiUrl);
-    const characters = response.data.characters;
-
-    // Iterate over the characters array
-    for (const characterUrl of characters) {
-      const characterResponse = await axios.get(characterUrl);
-      console.log(characterResponse.data.name);
+function fetchCharacterNames () {
+  request(apiUrl, (error, response, body) => {
+    if (error) {
+      console.error('Error:', error.message);
+      return;
     }
-  } catch (error) {
-    console.error('Error:', error.message);
-  }
+
+    const data = JSON.parse(body);
+    const characters = data.characters;
+
+    characters.forEach((characterUrl) => {
+      request(characterUrl, (error, response, body) => {
+        if (error) {
+          console.error('Error:', error.message);
+          return;
+        }
+        const characterData = JSON.parse(body);
+        console.log(characterData.name);
+      });
+    });
+  });
 }
 
 fetchCharacterNames();
